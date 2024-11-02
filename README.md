@@ -5,7 +5,7 @@ TODO
 
 ## Tecnologias Utilizadas:
 ### - MCU: nrf52832
-### - Sensor ultrassônico: HC-SR04 conectado via I2C
+### - Sensor ultrassônico: HC-SR04 conectado via 1-wire
 ### - RTOS: Zephyr
 ### - Suite de testes: ZTest + Twister
 
