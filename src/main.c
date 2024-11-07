@@ -1,11 +1,15 @@
-#include "modules/ble.h"
+#include "modules/ble_lm.h"
 #include "modules/hcsr04.h"
 #include "modules/data_manager.h"
+#include "modules/guards.h"
 
 #include <stdio.h>
 
-int main(void) {
-  printf("Hello World!\n");
+int main(void)
+{
+	LM_CHECK_ERROR(ble_init());
 
-  return 0;
+	printf("Hello World!\n");
+
+	return 0;
 }
