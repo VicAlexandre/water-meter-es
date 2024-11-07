@@ -4,8 +4,27 @@
  * @date 01-11-2024
  */
 
-#ifndef BLE_H
-#define BLE_H
+#ifndef LM_BLE_H
+#define LM_BLE_H
+
+#include <errno.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <string.h>
+#include <sys/types.h>
+#include <zephyr/kernel.h>
+#include <zephyr/sys/byteorder.h>
+#include <zephyr/sys/printk.h>
+#include <zephyr/types.h>
+
+#include <zephyr/settings/settings.h>
+
+#include <zephyr/bluetooth/bluetooth.h>
+#include <zephyr/bluetooth/conn.h>
+#include <zephyr/bluetooth/gatt.h>
+#include <zephyr/bluetooth/hci.h>
+#include <zephyr/bluetooth/services/bas.h>
+#include <zephyr/bluetooth/uuid.h>
 
 #include "hcsr04.h"
 
@@ -29,4 +48,4 @@ int ble_send_alarm(struct hcsr04_data *data);
  */
 int ble_send_critical_alarm(struct hcsr04_data *data);
 
-#endif /* BLE_H */
+#endif /* LM_BLE_H */
