@@ -108,17 +108,17 @@ static struct bt_conn_auth_cb auth_cb_display = {
 
 /* Bluetooth service definition */
 BT_GATT_SERVICE_DEFINE(lm_svc, BT_GATT_PRIMARY_SERVICE(&self.service),
-		       BT_GATT_CUD("Leitura de Nível", BT_GATT_PERM_READ),
 		       BT_GATT_CHARACTERISTIC(&self.latest_reading.uuid, BT_GATT_CHRC_READ,
 					      BT_GATT_PERM_READ_AUTHEN, read_latest_reading, NULL,
 					      NULL),
-		       BT_GATT_CUD("Alarme de Nível Baixo", BT_GATT_PERM_READ),
+		       BT_GATT_CUD("Leitura de Nível", BT_GATT_PERM_READ),
 		       BT_GATT_CHARACTERISTIC(&self.level_alarm.uuid, BT_GATT_CHRC_READ,
 					      BT_GATT_PERM_READ_AUTHEN, read_alarm, NULL, NULL),
-		       BT_GATT_CUD("Alarme Crítico de Nível Baixo", BT_GATT_PERM_READ),
+		       BT_GATT_CUD("Alarme de Nível Baixo", BT_GATT_PERM_READ),
 		       BT_GATT_CHARACTERISTIC(&self.critical_level_alarm.uuid, BT_GATT_CHRC_READ,
 					      BT_GATT_PERM_READ_AUTHEN, read_critical_alarm, NULL,
-					      NULL), );
+					      NULL),
+		       BT_GATT_CUD("Alarme Crítico de Nível Baixo", BT_GATT_PERM_READ), );
 
 int ble_init(void)
 {
