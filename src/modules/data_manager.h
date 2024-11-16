@@ -18,6 +18,8 @@ struct data_man_conf {
   k_timeout_t poll_interval; /* The interval between each poll of the sensors. */
   uint32_t alarm_threshold; /* The threshold to trigger an alarm. */
   uint32_t critical_alarm_threshold; /* The threshold to trigger a critical alarm. */
+  struct hcsr04_data *buffer_data;   /* Pointer to the buffer storing sensor data. */
+  int8_t buffer_size;                /* Size of the buffer. */
 };
 
 /**
@@ -62,5 +64,11 @@ int data_man_get_config(struct data_man_conf *config);
  * @return 0 on success, -ERRNO otherwise
  */
 int data_man_set_config(struct data_man_conf *config);
+
+/**
+ * @brief Deinitializes the data manager module.
+ * @return 0 on success, -ERRNO otherwise.
+ */
+int data_man_deinit(void);
 
 #endif /* DATA_MANAGER_H */
