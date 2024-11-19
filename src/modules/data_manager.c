@@ -82,7 +82,7 @@ int data_man_poll(void) {
     struct hcsr04_data data;
     int ret;
 
-    ret = hcsr04_read_distance(&data.distance); 
+    ret = hcsr04_read_distance(&data); 
     if (ret < 0) {
         return ret; 
     }
