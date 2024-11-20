@@ -8,6 +8,7 @@
 int main(void)
 {
 	LM_CHECK_ERROR(ble_init());
+	LM_CHECK_ERROR(hcsr04_init());
 
 	printf("Hello World!\n");
 

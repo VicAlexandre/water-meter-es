@@ -8,6 +8,7 @@
 #define HCSR04_H
 
 #include <zephyr/kernel.h>
+#include <errno.h>
 #include <stdint.h>
 
 struct hcsr04_data {
@@ -18,7 +19,7 @@ struct hcsr04_data {
 /**
  * @brief Initializes the HCSR-04 driver and spawns its thread.
  */
-void hcsr04_init(void);
+int hcsr04_init(void);
 
 /**
  * @brief Reads the distance measured by the HCSR-04 sensor.
