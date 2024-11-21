@@ -4,7 +4,7 @@
 TODO
 
 ## Tecnologias Utilizadas:
-### - MCU: nrf52832
+### - MCU: ESP32 DEV KIT V1
 ### - Sensor ultrassônico: HC-SR04 conectado via 1-wire
 ### - RTOS: Zephyr
 ### - Suite de testes: ZTest + Twister
