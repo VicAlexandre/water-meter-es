@@ -6,10 +6,6 @@
 #define THREAD_PRIORITY 2
 #define DELAY 100
 
-#define GPIO_DEVICE   "GPIO_0"
-#define GPIO_TRIG_PIN 13
-#define GPIO_ECHO_PIN 12
-
 /**
  * @brief Blocks the current thread calculating the distance every DELAY millis.
  */
@@ -25,23 +21,23 @@ uint32_t round_to_int(double n);
 K_THREAD_STACK_DEFINE(hcsr04_stack_area, THREAD_STACK_SIZE);
 struct k_thread thread_data;
 
-struct device *dev;
+static const struct gpio_dt_spec trig = GPIO_DT_SPEC_GET(DT_NODELABEL(trig), gpios);
+static const struct gpio_dt_spec echo = GPIO_DT_SPEC_GET(DT_NODELABEL(echo), gpios);
 
 uint32_t distance_cm = -1; // last measured distance in cm
 
 int hcsr04_init(void)
 {
-    // setup device
-    dev = device_get_binding(GPIO_DEVICE);
-    if (dev == NULL) return -EINVAL;
-
     int ret;
 
-    ret = gpio_pin_configure(dev, GPIO_TRIG_PIN, GPIO_OUTPUT);
-    if (ret < 0) return ret;
+    if (!gpio_is_ready_dt(&trig) ||
+        !gpio_is_ready_dt(&echo)) return -ENODEV;
 
-    ret = gpio_pin_configure(dev, GPIO_ECHO_PIN, GPIO_INPUT);
-    if (ret < 0) return ret;
+    ret = gpio_pin_configure_dt(&trig, GPIO_OUTPUT);
+    if (ret != 0) return ret;
+
+    ret = gpio_pin_configure_dt(&echo, GPIO_INPUT);
+    if (ret != 0) return ret;
 
     k_thread_create(&thread_data, hcsr04_stack_area,
                     K_THREAD_STACK_SIZEOF(hcsr04_stack_area),
@@ -55,7 +51,7 @@ int hcsr04_init(void)
 int hcsr04_read_distance(uint32_t *distance)
 {
     if (distance_cm < 0) {
-        return -EINVAL;
+        return -ENODEV;
     }
     *distance = distance_cm;
     return 0;
@@ -65,23 +61,23 @@ void calculate_distance(void *p1, void *p2, void *p3)
 {
     while (1) {
         // fire ultrasonic burst
-        gpio_pin_set(dev, GPIO_TRIG_PIN, 1);
+        gpio_pin_set_dt(&trig, 1);
         k_usleep(10);
-        gpio_pin_set(dev, GPIO_TRIG_PIN, 0);
+        gpio_pin_set_dt(&trig, 0);
 
-        int echo_val;
+        int ret = 0;
 
         // wait for HIGH
         do {
-            echo_val = gpio_pin_get(dev, GPIO_ECHO_PIN);
-        } while (echo_val == 0);
+            ret = gpio_pin_get_dt(&echo);
+        } while (ret == 0);
 
         uint32_t start = k_cycle_get_32();
 
         // wait for LOW
         do {
-            echo_val = gpio_pin_get(dev, GPIO_ECHO_PIN);
-        } while (echo_val == 1);
+            ret = gpio_pin_get_dt(&echo);
+        } while (ret == 1);
 
         // calculate distance
         uint32_t cycles = k_cycle_get_32() - start;
