@@ -6,7 +6,7 @@
             label = "TRIG pin";
         };
         echo: echo {
-            gpios = <&gpio0 12 GPIO_ACTIVE_LOW>;
+            gpios = <&gpio0 12 GPIO_ACTIVE_HIGH>;
             label = "ECHO pin";
         };
     };
