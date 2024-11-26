@@ -75,7 +75,7 @@ void calculate_distance(void *p1, void *p2, void *p3)
         // wait for HIGH
         do {
             ret = gpio_pin_get_dt(&echo);
-            k_sleep(K_MSEC(10));
+            k_usleep(10);
         } while (ret == 0);
 
         uint32_t start = k_cycle_get_32();
@@ -83,7 +83,7 @@ void calculate_distance(void *p1, void *p2, void *p3)
         // wait for LOW
         do {
             ret = gpio_pin_get_dt(&echo);
-            k_sleep(K_MSEC(10));
+            k_usleep(10);
         } while (ret == 1);
 
         // calculate distance
