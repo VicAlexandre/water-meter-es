@@ -26,6 +26,6 @@ int hcsr04_init(void);
  * @param[out] distance The distance measured by the sensor.
  * @return 0 on success, -ERRNO otherwise.
  */
-int hcsr04_read_distance(uint32_t *distance);
+int hcsr04_read_distance(struct hcsr04_data *data);
 
 #endif /* HCSR04_H */

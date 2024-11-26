@@ -4,7 +4,7 @@
 
 #define THREAD_STACK_SIZE 1024
 #define THREAD_PRIORITY 2
-#define DELAY 100
+#define DELAY 250
 
 /**
  * @brief Blocks the current thread calculating the distance every DELAY millis.
@@ -48,12 +48,17 @@ int hcsr04_init(void)
     return 0;
 }
 
-int hcsr04_read_distance(uint32_t *distance)
+int hcsr04_read_distance(struct hcsr04_data *data)
 {
     if (distance_cm < 0) {
         return -ENODEV;
     }
-    *distance = distance_cm;
+    k_timepoint_t timepoint;
+    timepoint.tick = k_uptime_ticks();
+
+    data->distance = distance_cm;
+    data->timestamp = timepoint;
+
     return 0;
 }
 
@@ -70,6 +75,7 @@ void calculate_distance(void *p1, void *p2, void *p3)
         // wait for HIGH
         do {
             ret = gpio_pin_get_dt(&echo);
+            k_sleep(K_MSEC(10));
         } while (ret == 0);
 
         uint32_t start = k_cycle_get_32();
@@ -77,6 +83,7 @@ void calculate_distance(void *p1, void *p2, void *p3)
         // wait for LOW
         do {
             ret = gpio_pin_get_dt(&echo);
+            k_sleep(K_MSEC(10));
         } while (ret == 1);
 
         // calculate distance
