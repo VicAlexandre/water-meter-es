@@ -91,7 +91,7 @@ void calculate_distance(void *p1, void *p2, void *p3)
         double seconds = (double) cycles / sys_clock_hw_cycles_per_sec();
 
         double distance_m = (seconds * 343) / 2; // speed of sound: 343 m/s
-        distance_cm = round_to_int(distance_m / 100);
+        distance_cm = round_to_int(distance_m * 100);
 
         // apply delay
         k_sleep(K_MSEC(DELAY));
