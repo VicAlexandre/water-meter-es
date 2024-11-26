@@ -18,6 +18,7 @@ struct hcsr04_data {
 
 /**
  * @brief Initializes the HCSR-04 driver and spawns its thread.
+ * @return 0 on success, -ERRNO otherwise.
  */
 int hcsr04_init(void);
 
