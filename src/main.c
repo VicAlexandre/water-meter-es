@@ -5,44 +5,90 @@
 
 #include <stdio.h>
 
-static uint32_t distance(const struct shell *shell, size_t argc, char **argv)
+static void distance(const struct shell *shell, size_t argc, char **argv)
 {
 	uint32_t distance;
 	hcsr04_read_distance(&distance);
-	return distance;
+	printf("Current distance: %d\n", distance);
 }
 
-static int alarm(const struct shell *shell, size_t argc, char **argv)
+static void alarm(const struct shell *shell, size_t argc, char **argv)
 {
-	int data;
-	ble_send_alarm(&data);
-	return data;
+	if(argc != 2) {
+		printf("Usage: %s <distance>\n", argv[0]);
+		return;
+	}
+
+	int distance = atoi(argv[1]);
+
+	if(distance <= 0) {
+		printf("Error: Please provide a positive value for the length in centimeters.\n");
+		return;
+	}
+
+	struct hcsr04 data = {distance, k_cycle_get_32()};
+	int ret = ble_send_alarm();
+	if(ret == 0) {
+		printf("Alarm sent\n");
+	}
+	else {
+		printf("Error: %d\n", ret);
+	}
 }
 
 static int critical_alarm(const struct shell *shell, size_t argc, char **argv)
 {
-	int data;
-	ble_send_critical_alarm(&data);
-	return data;
+	if(argc != 2) {
+		printf("Usage: %s <distance>\n", argv[0]);
+		return;
+	}
+
+	int distance = atoi(argv[1]);
+
+	if(distance <= 0) {
+		printf("Error: Please provide a positive value for the length in centimeters.\n");
+		return;
+	}
+
+	struct hcsr04 data = {distance, k_cycle_get_32()};
+	int ret = ble_send_alarm();
+	if(ret == 0) {
+		printf("Critical alarm sent\n");
+	}
+	else {
+		printf("Error: %d\n", ret);
+	}
 }
 
 static int data_get(const struct shell *shell, size_t argc, char **argv)
 {
-	int data;
+	struct hcsr04_data data;
 	data_man_get(&data);
-	return data;
+	printf("Distance: %d, Timestamp: %d\n", data.distance, data.timestamp);
 }
 
 static int data_get_bulk(const struct shell *shell, size_t argc, char **argv)
 {
-	int data;
-	data_man_get_bulk(&data);
-	return data;
+	if(argc != 2) {
+		printf("Usage: %s <n>\n", argv[0]);
+		return;
+	}
+
+	int n = atoi(argv[1]);
+
+	if(n <= 0) {
+		printf("Error: please provide a value that is not null\n");
+		return;
+	}
+	
+	struct hcsr04_data data;
+	data_man_get_bulk(&data, n);
+	printf("Distance: %d, Timestamp: %d\n", data.distance, data.timestamp);
 }
 
 SHELL_CMD_REGISTER(distance, NULL, "Return the measured distance by the sensor", distance);
 SHELL_CMD_REGISTER(alarm, NULL, "Sends an alarm through BLE", alarm);
-SHELL_CMD_REGISTER(critical_alarm, NULL, "Sends a alarm through BLE", critical_alarm);
+SHELL_CMD_REGISTER(critical_alarm, NULL, "Sends an alarm through BLE", critical_alarm);
 SHELL_CMD_REGISTER(get, NULL, "Gets last data polled by the manager", data_get);
 SHELL_CMD_REGISTER(get_bulk, NULL, "Gets last n data polled by the manager", data_get_bulk);
 
