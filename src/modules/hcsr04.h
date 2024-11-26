@@ -23,7 +23,7 @@ int hcsr04_init(void);
 
 /**
  * @brief Reads the distance measured by the HCSR-04 sensor.
- * @param[out] distance The distance measured by the sensor.
+ * @param[out] data The data with distance measured by the sensor.
  * @return 0 on success, -ERRNO otherwise.
  */
 int hcsr04_read_distance(struct hcsr04_data *data);
