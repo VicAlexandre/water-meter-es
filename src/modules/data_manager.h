@@ -10,16 +10,16 @@
 
 #include <zephyr/kernel.h>
 #include <stdint.h>
+#include <zephyr/sys/ring_buffer.h>
 
 /**
  * @brief Stores a configuration for the data manager module.
  */
 struct data_man_conf {
-  k_timeout_t poll_interval; /* The interval between each poll of the sensors. */
-  uint32_t alarm_threshold; /* The threshold to trigger an alarm. */
-  uint32_t critical_alarm_threshold; /* The threshold to trigger a critical alarm. */
-  struct hcsr04_data *buffer_data;   /* Pointer to the buffer storing sensor data. */
-  int8_t buffer_size;                /* Size of the buffer. */
+	k_timeout_t poll_interval;         /* The interval between each poll of the sensors. */
+	uint32_t alarm_threshold;          /* The threshold to trigger an alarm. */
+	uint32_t critical_alarm_threshold; /* The threshold to trigger a critical alarm. */
+	struct ring_buf buffer;            /* The circular buffer. */
 };
 
 /**
