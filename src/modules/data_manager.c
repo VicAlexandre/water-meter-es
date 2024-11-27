@@ -18,7 +18,7 @@ static bool initialized = false;            /**< Flag indicating whether the mod
 
 static uint8_t *dynamic_buffer = NULL;      /**< Dynamic buffer to store data polled from the sensor. */
 
-struct data_man_conf data_man_conf;         /**< Configuration structure for data manager. */
+static struct data_man_conf data_man_conf;         /**< Configuration structure for data manager. */
 
 static struct k_thread reader_tid;          /**< Thread structure for data reader. */
 K_THREAD_STACK_DEFINE(reader_stack, 1024);  /**< Thread stack for data reader. */   
@@ -52,9 +52,7 @@ void data_reader_thread(void *arg1, void *arg2, void *arg3) {
 
     k_timer_start(&data_man_timer, config->poll_interval, config->poll_interval);
 
-    while (1) {
-        k_sleep(K_FOREVER);
-    }
+    return;
 }          
 
 int data_man_init(uint8_t buff_size, struct data_man_conf *config) {
@@ -162,9 +160,8 @@ int data_man_set_config(struct data_man_conf *config) {
 int data_man_deinit(void){
     if (dynamic_buffer != NULL) {
         k_free(dynamic_buffer); 
-        dynamic_buffer = NULL;   
-        return 0;                 
+        dynamic_buffer = NULL;                  
     }
-    
-    return -EINVAL; 
+
+    return 0;  
 }
