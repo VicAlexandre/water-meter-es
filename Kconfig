@@ -1,0 +1,7 @@
+menu "Water-meter Configuration"
+    config POLLING_DELAY_MS
+        int "Polling delay in ms"
+        default 4000
+endmenu
+
+source "Kconfig.zephyr"
