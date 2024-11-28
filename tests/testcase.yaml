@@ -3,4 +3,5 @@ tests:
     build_only: false
     tags: sample
     platform_allow:
+      - native_posix
       - qemu_cortex_m3
