@@ -1,0 +1,6 @@
+tests:
+  main.testing.ztest:
+    build_only: false
+    tags: sample
+    platform_allow:
+      - qemu_cortex_m3

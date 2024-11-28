@@ -1,5 +1,5 @@
 .idea
 build/
 cmake-build-zephyr/
-
+twister-out*
 *.o
