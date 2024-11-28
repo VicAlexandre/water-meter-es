@@ -1,28 +1,32 @@
 #include "hcsr04.h"
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
+#include <zephyr/logging/log.h>
 
 #define THREAD_STACK_SIZE 1024
 #define THREAD_PRIORITY   2
-#define DELAY             250
+#define TRIGGER_PIN       DT_ALIAS(trigger)
+#define ECHO_PIN          DT_ALIAS(echo)
 
 /**
  * @brief Blocks the current thread calculating the distance every DELAY millis.
  */
-void calculate_distance(void *p1, void *p2, void *p3);
+static void calculate_distance(void *p1, void *p2, void *p3);
 
 /**
  * @brief Rounds the given floating point number to the nearest integer.
  * @param[in] n The number to round.
  * @return The number rounded.
  */
-uint32_t round_to_int(double n);
+static uint32_t round_to_int(double n);
 
 K_THREAD_STACK_DEFINE(hcsr04_stack_area, THREAD_STACK_SIZE);
 struct k_thread thread_data;
 
-static const struct gpio_dt_spec trig = GPIO_DT_SPEC_GET(DT_NODELABEL(trig), gpios);
-static const struct gpio_dt_spec echo = GPIO_DT_SPEC_GET(DT_NODELABEL(echo), gpios);
+static const struct gpio_dt_spec trig = GPIO_DT_SPEC_GET(TRIGGER_PIN, gpios);
+static const struct gpio_dt_spec echo = GPIO_DT_SPEC_GET(ECHO_PIN, gpios);
+
+LOG_MODULE_REGISTER(hcsr04);
 
 static uint32_t distance_cm = -1; // last measured distance in cm
 
@@ -64,8 +68,9 @@ int hcsr04_read_distance(struct hcsr04_data *data)
 	return 0;
 }
 
-void calculate_distance(void *p1, void *p2, void *p3)
+static void calculate_distance(void *p1, void *p2, void *p3)
 {
+	LOG_INF("HCSR-04 ROUTINE STARTED");
 	while (1) {
 		// fire ultrasonic burst
 		gpio_pin_set_dt(&trig, 1);
@@ -96,11 +101,11 @@ void calculate_distance(void *p1, void *p2, void *p3)
 		distance_cm = round_to_int(distance_m * 100);
 
 		// apply delay
-		k_sleep(K_MSEC(DELAY));
+		k_sleep(K_MSEC(CONFIG_POLLING_DELAY_MS));
 	}
 }
 
-uint32_t round_to_int(double n)
+static uint32_t round_to_int(double n)
 {
-	return n + 0.5;
+	return n + 0.1;
 }

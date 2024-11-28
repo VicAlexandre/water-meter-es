@@ -5,6 +5,8 @@
  */
 
 #include "ble_lm.h"
+
+#include "data_manager.h"
 #include "guards.h"
 
 #define SERVICE_UUID              0X0222 /* Generic BLE service UUID. */
@@ -152,7 +154,9 @@ static ssize_t read_latest_reading(struct bt_conn *conn, const struct bt_gatt_at
 				   uint16_t len, uint16_t offset)
 {
 	ssize_t msg;
-	uint32_t distance_reading = 0;
+	struct hcsr04_data distance_reading = {0};
+
+	LM_CHECK_ERROR(hcsr04_read_distance(&distance_reading));
 
 	msg = bt_gatt_attr_read(conn, attr, buf, len, offset, &distance_reading,
 				sizeof(distance_reading));
@@ -164,7 +168,9 @@ static ssize_t read_alarm(struct bt_conn *conn, const struct bt_gatt_attr *attr,
 			  uint16_t len, uint16_t offset)
 {
 	ssize_t msg;
-	uint32_t alarm = 0;
+	bool alarm = false;
+
+	data_man_get_alarm_triggered(&alarm);
 
 	msg = bt_gatt_attr_read(conn, attr, buf, len, offset, &alarm, sizeof(alarm));
 
@@ -175,7 +181,9 @@ static ssize_t read_critical_alarm(struct bt_conn *conn, const struct bt_gatt_at
 				   uint16_t len, uint16_t offset)
 {
 	ssize_t msg;
-	uint32_t critical_alarm = 0;
+	bool critical_alarm = false;
+
+	data_man_get_critical_alarm_triggered(&critical_alarm);
 
 	msg = bt_gatt_attr_read(conn, attr, buf, len, offset, &critical_alarm,
 				sizeof(critical_alarm));

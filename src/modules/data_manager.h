@@ -65,6 +65,10 @@ int data_man_get_config(struct data_man_conf *config);
  */
 int data_man_set_config(struct data_man_conf *config);
 
+int data_man_get_alarm_triggered(bool *alarm_trigg);
+
+int data_man_get_critical_alarm_triggered(bool *critical_alarm_trigg);
+
 /**
  * @brief Deinitializes the data manager module.
  * @return 0 on success, -ERRNO otherwise.
